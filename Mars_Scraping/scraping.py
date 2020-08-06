@@ -22,7 +22,9 @@ def scrape_all():
     browser = Browser('chrome', **{'executable_path':'chromedriver'}, headless=True)
     # headless = True, doesnt show automated script in action
     
-    news_title, news_teaser_sum = mars_news(browser) 
+    # pylint: disable=unbalanced-tuple-unpacking
+    # news_title, news_teaser_sum, news_date = mars_news(browser)
+    news_title, news_teaser_sum = mars_news(browser)  
 
     # Runs all separate scraping functions and stores results in a dictionary
     mars_total_data = {
@@ -84,7 +86,7 @@ def mars_news(browser):
 
     # return news_title, news_teaser_sum, news_date, latest_art_link
 
-    return news_title, news_teaser_sum 
+    return news_title, news_teaser_sum
 
 # --------------------------------------------------------------------------------------------------------------------------------
 #                                       JPL Featured Space Image
