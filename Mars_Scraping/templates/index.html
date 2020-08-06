@@ -1,53 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Required Meta Tags -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Mission to Mars</title>
+    <!-- Bootstrap CSS -->
     <link
       rel="stylesheet"
       href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css"
     />
+    <!-- Dark Mode Styles with different color, small shadow box and fixed position -->
+    <style>
+      body {
+        padding: 12px;
+        background-color: white;
+        color: black;
+        font-size: 12px;
+      }
+      .dark-mode {
+        background-color: black;
+        color: white;
+      }
+    </style>
+    <style>
+      .card {
+        box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+        transition: 0.3s;
+        width: 9.5%;
+      }
+      .card:hover {
+        box-shadow: 4px 8px 16px 0 rgba(0,0,0,0.2);
+      }
+      .container {
+        padding: 3px 7px;
+      }
+      </style>
+      <style>#parent4 {
+        position: fixed;
+        top: 70px;
+        left: 5px;
+        right: 5px;
+      }
+        </style>
   </head>
   <body>
-    <div class="container">
+    <div class="container-fluid" id="jumbos">
       <!-- Add Jumbotron to Header -->
-      <div class="jumbotron text-center">
-        <h1>Mission to Mars</h1>
+      <div class="jumbotron text-center";>
+        <p style="font-size:50px; color:firebrick">Mission to Mars</p>
+        <hr>
         <!-- Add a button to activate scraping script -->
-        <p><a class="btn btn-primary btn-lg" href="/scrape" role="button">Scrape New Data</a></p>
+        <p><a class="btn btn-success btn-lg" href="/scrape" role="button" id="scraping_t" >Scrape New Data</a></p>
+          <p style="font-size:10px; color:cadetblue">Last Modified:</p>
+          <p style="font-size:10px; color:cadetblue">{{ mars.last_modified }}</p>
+        </div>
+      <div class="dropdown" id="dropdownmmenu">
+        <button class="btn btn-default dropdown-toggle" type="button" id="menu1" data-toggle="dropdown">Select Section
+        <span class="caret"></span></button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="#latest_news">Latest News</a></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="#feat_img">Featured Image</a></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="#mars_facts">Facts</a></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="#thumbnails-smoll">Hemispheres</a></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="#mars-urls">URLs</a></li>
+          <li role="presentation" class="divider"></li>
+          <li role="presentation"><a role="menuitem" tabindex="-1" href="scrape">Scrape Webpage</a></li>
+        </ul>
+        </div>
+      <!-- Dark Mode Toggle Button on a Card! -->
+      <div class="card" id="parent4">
+        <div class="container">
+          <button onclick="myFunction()" style="color: firebrick;"><b>Toggle Dark Mode</b></button>
+        </div>
       </div>
-      <!-- Add section for Mars News -->
-      <div class="row" id="mars-news">
-        <div class="col-md-12">
-          <div class="media">
-            <div class="media-body">
-              <h2>Latest Mars News</h2>
-              <h4 class="media-heading">{{ mars.news_title }}</h4>
-              <p>{{ mars.news_paragraph_summary }}</p>
+        <!-- Add section for Mars News -->
+        <div class="row" id="mars-news">
+          <div class="col-md-12">
+            <div class="media">
+              <!-- <div class="list_date" style="color:#5A5A5A; font-size: 8px";>{{ mars.news_latest_date }}</div> -->
+              <div class="media-body" id="latest_news">
+                <h2>Latest Mars News</h2>
+                <hr>
+                <!-- <div class="list_date" style="color:#5A5A5A; font-size: 8px";>{{ mars.news_latest_date }}</div> -->
+                <h4 class="media-heading"><a href="https://mars.nasa.gov/news/?page=0&per_page=40&order=publish_date+desc%2Ccreated_at+desc&search=&category=19%2C165%2C184%2C204&blank_scope=Latest">{{ mars.news_title }}</a></h4>
+                <p>{{ mars.news_paragraph_summary }}</p>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-      <!-- Section for Featured Image and Facts table -->
-      <div class="row" id="mars-featured-image">
-        <div class="col-md-8">
-          <h2>Featured Mars Image</h2>
-          <img
-            src="{{mars.featured_image }}"
-            class="img-responsive"
-            alt="Responsive image"
-          />
-        </div>
-        <div class="col-md-4">
-          <!-- Mars Facts -->
-          <div class="row" id="mars-facts">
-            <h4>Mars Facts</h4>
-            {{ mars.facts | safe }}
+      <!-- Featured Image  -->
+        <div class="row" id="mars-featured-image-n-facts">
+          <div class="col-md-8" id="feat_img">
+            <h2>Featured Mars Image</h2>
+            <hr>
+            <img
+              src="{{mars.featured_image }}"
+              class="img-responsive"
+              alt="Responsive image"/>
+            </div>
+          <div class="col-md-4" id="mars_facts">
+            <!-- Mars Facts --> 
+              <h2>Mars Facts</h2>
+              <hr>
+              {{ mars.facts | safe }}
+            </div>
           </div>
-        </div>
+          <!-- Hemispheres Thumbnails -->
+          <div class="row" id="mars-hemisthumbs-and-urls">
+            <div class="col-md-6" id="thumbnails-smoll">
+              <h2>Mars Hemisphere Thumbnails</h2>
+              <hr>
+                <h5>Cerberus</h5>            
+                  <img src="https://astropedia.astrogeology.usgs.gov/download/Mars/Viking/cerberus_enhanced.tif/full.jpg" class="img-thumbnail; img-responsive; img-rounded" alt="Hemi1" width="152" height="118">
+                  <h5>Schiaparelli</h5>            
+                    <img src="https://astropedia.astrogeology.usgs.gov/download/Mars/Viking/schiaparelli_enhanced.tif/full.jpg" class="img-thumbnail; img-responsive; img-rounded" alt="Hemi1" width="152" height="118">
+                    <h5>Syrtis Major</h5>            
+                      <img src="https://astropedia.astrogeology.usgs.gov/download/Mars/Viking/syrtis_major_enhanced.tif/full.jpg" class="img-thumbnail; img-responsive; img-rounded" alt="Hemi1" width="152" height="118">
+                      <h5>Valles Marineris</h5>            
+                        <img src="https://astropedia.astrogeology.usgs.gov/download/Mars/Viking/valles_marineris_enhanced.tif/full.jpg" class="img-thumbnail; img-responsive; img-rounded" alt="Hemi1" width="152" height="118"> 
+              </div>
+              <!-- Mars Hemisphere Image URLS-->
+            <div class="col-md-6" id="mars-urls">  
+              <h2>Mars Hemisphere URLs</h2>
+              <hr>
+                {{ mars.img_and_url | safe }}
+              </div>
+            </div>
       </div>
-    </div>
+    <!-- Javascript -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <!-- Dark Mode Toggle Script -->
+    <script>
+      function myFunction() {
+         var element = document.body;
+         element.classList.toggle("dark-mode");
+      }
+      </script>
   </body>
 </html>

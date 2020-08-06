@@ -28,8 +28,11 @@ def scrape_all():
     mars_total_data = {
         "news_title" : news_title,
         "news_paragraph_summary" : news_teaser_sum,
+        # "news_latest_date" : news_date,
+        # "news_latest_link" : latest_art_link,
         "featured_image" : featured_image(browser),
         "facts" : mars_facts(),
+        "img_and_url": get_url(browser),
         "last_modified" : dt.datetime.now()}
 
     browser.quit()
@@ -68,6 +71,10 @@ def mars_news(browser):
         # Use the parent element to find the first a tag and save it as `news_title`
         news_title = slide_elem.find('div',class_='content_title').get_text()
 
+        # news_date = slide_elem.find('div',class_='list_date').get_text()
+
+        # latest_art_link = f"https://mars.nasa.gov{slide_elem.select_one('ul li a').get('href')}"
+
         # Use the parent element to find the paragraph text
         news_teaser_sum = slide_elem.find('div',class_='article_teaser_body').get_text()
 
@@ -75,7 +82,9 @@ def mars_news(browser):
 
         return None, None
 
-    return news_title, news_teaser_sum
+    # return news_title, news_teaser_sum, news_date, latest_art_link
+
+    return news_title, news_teaser_sum 
 
 # --------------------------------------------------------------------------------------------------------------------------------
 #                                       JPL Featured Space Image
@@ -140,7 +149,67 @@ def mars_facts():
     mars_df.set_index('Description', inplace=True) # set column index
 
     # Convert dataframe into HTML format, add bootstrap
-    return mars_df.to_html(classes= "table table-striped")
+    return mars_df.to_html(classes= "table")
+
+
+
+# --------------------------------------------------------------------------------------------------------------------------------
+#                                       Mars Hemispheres
+# --------------------------------------------------------------------------------------------------------------------------------
+
+def get_url(browser):
+
+    hemis_search_list = ['Cerberus Hemisphere Enhanced',
+                     'Schiaparelli Hemisphere Enhanced',
+                     'Syrtis Major Hemisphere Enhanced',
+                     'Valles Marineris Hemisphere Enhanced']
+
+    names_n_url = []
+
+    Hemisphere = "Hemisphere"
+
+    Urlid = "URL"
+
+    for x in range(len(hemis_search_list)):
+    
+        url = 'https://astrogeology.usgs.gov/search/results?q=hemisphere+enhanced&k1=target&v1=Mars'
+
+        browser.visit(url)
+    
+        try:
+
+            browser.is_element_present_by_text((f'{hemis_search_list[x]}'), wait_time=2)
+    
+            hemi_click = browser.links.find_by_partial_text(f'{hemis_search_list[x]}')
+    
+            hemi_click.click()
+    
+            parse_html = browser.html
+
+            hemi_parse_html = soupy(parse_html, 'html.parser' )
+        
+            hemi_img_url = hemi_parse_html.select_one('ul li a').get("href")
+        
+            names_n_url.append({Hemisphere:hemis_search_list[x],Urlid:hemi_img_url})
+
+        except IndexError:
+
+            return f"Search result not found"
+
+        except AttributeError:
+
+            return None
+
+    # df_hemi_urls = pd.DataFrame.from_dict(names_n_url, orient='columns')
+
+    # df_hemi_urls.set_index('Hemisphere', inplace=True)
+    
+    # df_hemi_urls['URL']=str(df_hemi_urls['URL'])  
+
+    # pd.set_option('display.max_colwidth', -1)
+
+    return names_n_url
+
 
 
 if __name__ == "__main__":

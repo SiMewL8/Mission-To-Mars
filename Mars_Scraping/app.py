@@ -1,7 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect
 from flask_pymongo import PyMongo
 import scraping
-
 
 app = Flask(__name__)
 
@@ -41,9 +40,8 @@ def scrape():
 
     mars.update({}, mars_data, upsert=True)
 #     update(insert new data) db, upsert creats new document if not already
-    
-    return "Scraping Successful!!"
 
+    return "Scraping Successful!"
 
 # run flask
 if __name__ == "__main__":
